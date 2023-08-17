@@ -1,33 +1,60 @@
 import { ScrollView,Text, StyleSheet, View } from 'react-native'
 import React, { Component } from 'react'
-import { BannerSlider, HeaderComponent, ListMerk, ListCar } from '../../components'
+import { HeaderComponent, ListMerk, ListCar } from '../../components'
 import { colors } from '../../utils'
-import {dummyCars, dummyMerks} from '../../data'
-import {Tombol,Jarak} from '../../components'
+import {Jarak} from '../../components'
+import { connect } from 'react-redux'
+import { getListCar } from '../../actions/CarAction'
+import { getListMerk } from '../../actions/MerkAction'
 
 
-export default class ListMobil extends Component {
-  constructor(props) {
-    super(props)
+class ListMobil extends Component {
   
-    this.state = {
-       merks : dummyMerks,
-       cars: dummyCars
-    }
+  componentDidMount() {
+    this._unsubscribe = this.props.navigation.addListener('focus', () => {
+      const {idMerk, keyword} = this.props
+      this.props.dispatch(getListMerk())
+      this.props.dispatch(getListCar(idMerk, keyword))
+    });
   }
+
+  componentWillUnmount() {
+    this._unsubscribe();
+  }
+
+  componentDidUpdate(prevProps){
+    const { idMerk, keyword } = this.props
+
+    if(idMerk && prevProps.idMerk !== idMerk){
+      this.props.dispatch(getListCar(idMerk, keyword))
+    }
+    if(keyword && prevProps.keyword !== keyword){
+      this.props.dispatch(getListCar(idMerk, keyword))
+    }
+} 
+
   render() {
-    const {merks, cars} = this.state
-    const {navigation} = this.props
+    const {navigation, namaMerk, keyword} = this.props
+    
     return (
         <View style={styles.page}>
-          <HeaderComponent navigation={navigation}/>
+          <HeaderComponent navigation={navigation} page="ListMobil"/>
           <ScrollView showsVerticalScrollIndicator={false} style={styles.container}>
             <View style={styles.pilihmerk}>
-              <ListMerk merks={merks}/>
+              <ListMerk navigation={navigation}/>
             </View>
             <View style={styles.pilihcar}>
-              <Text style={styles.label}>Pilih <Text style={styles.boldLabel}>Mobil</Text> Yang Anda Inginkan</Text>
-              <ListCar cars={cars}/>
+              {keyword ? (
+                <Text style={styles.label}>
+                  Cari : <Text style={styles.boldLabel}>{keyword} </Text> 
+              </Text>
+              ) : (
+                <Text style={styles.label}>
+                  Pilih <Text style={styles.boldLabel}>Mobil </Text>
+                  {namaMerk ? namaMerk : "Yang Anda Inginkan"}
+                </Text>
+              )}
+              <ListCar navigation={navigation}/>
             </View>
             <Jarak height={110}/>
           </ScrollView>
@@ -37,6 +64,13 @@ export default class ListMobil extends Component {
   }
 }
 
+const mapStateToProps = (state) => ({
+  idMerk: state.CarReducer.idMerk,
+  namaMerk: state.CarReducer.namaMerk,
+  keyword: state.CarReducer.keyword
+})
+
+export default connect(mapStateToProps, null)(ListMobil)
 const styles = StyleSheet.create({
   page:{ flex: 1, backgroundColor: colors.white},
   container:{

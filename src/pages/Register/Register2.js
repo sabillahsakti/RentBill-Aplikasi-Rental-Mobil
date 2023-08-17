@@ -1,21 +1,71 @@
-import { Text, StyleSheet, View, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard } from 'react-native'
+import { Text, StyleSheet, View, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard, Alert } from 'react-native'
 import React, { Component } from 'react'
 import { colors, responsiveWidth } from '../../utils'
 import {IlustrasiRegister2} from '../../assets'
 import {Inputan, Jarak, Tombol, Pilihan} from '../../components'
 import { ScrollView } from 'react-native-gesture-handler'
+import { connect } from 'react-redux'
+import {getProvinsiList, getKotaList} from '../../actions/RajaOngkirAction'
+import {registerUser} from '../../actions/AuthAction'
 
-export default class Register2 extends Component {
+class Register2 extends Component {
     constructor(props) {
       super(props)
     
       this.state = {
-         dataProvinsi: [],
-         dataKota: []
-      }
+            alamat: '',
+            kota: false,
+            provinsi: false,
+            
+        }
     }
+
+    componentDidMount(){
+        this.props.dispatch(getProvinsiList())
+    }
+
+    componentDidUpdate(prevProps){
+        const { registerResult } = this.props
+
+        if(registerResult && prevProps.registerResult !== registerResult){
+            this.props.navigation.replace("MainApp")
+        }
+    }
+
+    ubahProvinsi = (provinsi) => {
+        this.setState({
+            provinsi: provinsi
+        })
+
+        this.props.dispatch(getKotaList(provinsi))
+    }
+
+    onContinue=()=>{
+        const{alamat, kota, provinsi} = this.state
+        if(alamat&&kota&&provinsi){
+
+            const data = {
+                nama: this.props.route.params.nama,
+                email: this.props.route.params.email,
+                nohp: this.props.route.params.nohp,
+                alamat: alamat,
+                kota: kota,
+                provinsi: provinsi,
+                status: 'user'
+            }
+
+            //Ke Auth Action
+            this.props.dispatch(registerUser(data, this.props.route.params.password))
+
+        }else{
+            Alert.alert("Error", "Alamat, Kota, dan Provinsi harus diisi")
+        }
+    }
+
   render() {
-    const{dataKota, dataProvinsi} = this.state
+    const{alamat, kota, provinsi} = this.state
+    const {getProvinsiResult, getKotaResult, registerLoading} = this.props
+
     return (
 
         <KeyboardAvoidingView
@@ -24,8 +74,8 @@ export default class Register2 extends Component {
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <ScrollView showsVerticalScrollIndicator={false}>
                 <View style={styles.btnBack}>
-                        <Tombol icon="arrow-left" onPress={()=> this.props.navigation.goBack()}/>
-                    </View>
+                    <Tombol icon="arrow-left" onPress={()=> this.props.navigation.goBack()}/>
+                </View>
                     <View style={styles.ilustrasi}>
                         <IlustrasiRegister2/>
                         <Jarak height={10}/>
@@ -39,14 +89,34 @@ export default class Register2 extends Component {
                         </View>
                     </View>
 
-                    <View style={styles.card}>
-                    <Inputan label="Alamat" textarea/>
+                <View style={styles.card}>
+                    <Inputan label="Alamat" 
+                        textarea
+                        onChangeText={(alamat)=> this.setState({alamat})}
+                        value={alamat}
+                    />
 
-                    <Pilihan label="Provinsi" datas={dataProvinsi}/>
-                    <Pilihan label="Kota/Kav" datas={dataKota}/>
-                        <Jarak height={30}/>
-                        <Tombol title="Continue" type="textIcon" icon="submit" padding={10} fontSize={18} onPress={()=> this.props.navigation.navigate('MainApp')}/>
-                    </View>
+                    <Pilihan 
+                        label="Provinsi" 
+                        datas={getProvinsiResult ? getProvinsiResult : []} 
+                        selectedValue={provinsi}
+                        onValueChange={(provinsi) => this.ubahProvinsi(provinsi)}/>
+                    <Pilihan label="Kota/Kab" 
+                        datas={getKotaResult ? getKotaResult : []} 
+                        selectedValue={kota}
+                        onValueChange={(kota)=> this.setState({ kota: kota})}
+                    />
+                    <Jarak height={30}/>
+                    <Tombol 
+                        title="Continue" 
+                        type="textIcon" 
+                        icon="submit" 
+                        padding={10} 
+                        fontSize={18} 
+                        onPress={()=> this.onContinue()}
+                        loading={registerLoading}
+                    />
+                </View>
             </ScrollView>
         </TouchableWithoutFeedback>
         </KeyboardAvoidingView>
@@ -54,6 +124,17 @@ export default class Register2 extends Component {
     )
   }
 }
+
+const mapStateToProps= (state) => ({
+    getProvinsiResult : state.RajaOngkirReducer.getProvinsiResult,
+    getKotaResult : state.RajaOngkirReducer.getKotaResult,
+
+    registerLoading: state.AuthReducer.registerLoading,
+    registerResult: state.AuthReducer.registerLoading,
+    registerError: state.AuthReducer.registerLoading,
+})
+
+export default connect(mapStateToProps, null)(Register2)
 
 const styles = StyleSheet.create({
     page:{

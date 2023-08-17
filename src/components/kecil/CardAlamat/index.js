@@ -3,14 +3,14 @@ import React from 'react'
 import { colors } from '../../../utils'
 
 
-const CardAlamat = ({profile}) => {
+const CardAlamat = ({alamat,provinsi,kota, navigation}) => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Alamat Saya :</Text>
-      <Text style={styles.alamat}>{profile.alamat}</Text>
-      <Text style={styles.alamat}>{profile.kota}</Text>
-      <Text style={styles.alamat}>{profile.provinsi}</Text>
-      <TouchableOpacity>
+      <Text style={styles.alamat}>{alamat}</Text>
+      <Text style={styles.alamat}>{kota}</Text>
+      <Text style={styles.alamat}>{provinsi}</Text>
+      <TouchableOpacity onPress={() => navigation.navigate('EditProfile')}>
         <Text style={styles.ubahAlamat}>Ubah Alamat</Text>
       </TouchableOpacity>
     </View>

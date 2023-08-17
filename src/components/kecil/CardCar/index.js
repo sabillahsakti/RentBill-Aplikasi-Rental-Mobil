@@ -7,11 +7,11 @@ const CardCar = ({car, navigation}) => {
     return (
         <View style={styles.container}>
             <TouchableOpacity style={styles.card}>
-                <Image source={car.gambar[0]} style={styles.gambar}/>
+                <Image source={{uri:car.gambar[0]}} style={styles.gambar}/>
                 <Text style={styles.text}>{car.nama}</Text>
             </TouchableOpacity>
 
-            <Tombol type="text" title="Detail" padding={8} onPress={() => navigation.navigate('CarDetail', {car})}/>        
+            <Tombol type="text" title="Lihat" padding={8} onPress={() => navigation.navigate('CarDetail', {car})}/>        
         </View>
     )
 }
@@ -25,7 +25,7 @@ const styles = StyleSheet.create({
     },
     card:{
         backgroundColor: colors.yellow,
-        width: responsiveWidth(150),
+        width: responsiveWidth(140),
         alignItems: 'center',
         padding:10,
         borderRadius:10,

@@ -35,7 +35,7 @@ export default class BannerSlider extends Component {
 
 const styles = StyleSheet.create({
     container:{
-        marginTop:-15
+        marginTop:5
     },
     slider:{
         borderRadius: 10,

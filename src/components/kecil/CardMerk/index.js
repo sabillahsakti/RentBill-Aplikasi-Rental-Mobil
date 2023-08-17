@@ -1,16 +1,26 @@
 import { StyleSheet, Image, TouchableOpacity} from 'react-native'
 import React from 'react'
 import {colors, responsiveHeight,responsiveWidth} from '../../../utils'
+import { connect } from 'react-redux'
+import {getCarByMerk} from '../../../actions/CarAction'
 
-const CardMerk = ({merk}) => {
+const CardMerk = ({merk, navigation, id, dispatch}) => {
+  const toCarByMerk = (id, namaMerk) => {
+
+    // Ke Car Action
+    dispatch(getCarByMerk(id, namaMerk))
+
+    //Navigation ke ListCar
+    navigation.navigate('ListMobil')
+  }
   return (
-    <TouchableOpacity style={styles.container}>
-      <Image source={merk.gambar} style={styles.logo}/>
+    <TouchableOpacity style={styles.container} onPress={()=> toCarByMerk(id, merk.namaMerk)}>
+      <Image source={{uri: merk.image}} style={styles.logo}/>
     </TouchableOpacity>
   )
 }
 
-export default CardMerk
+export default connect()(CardMerk)
 
 const styles = StyleSheet.create({
   container:{

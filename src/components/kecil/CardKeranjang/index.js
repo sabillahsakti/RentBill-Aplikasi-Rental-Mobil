@@ -1,31 +1,40 @@
-import { StyleSheet, Text, View, Image } from 'react-native'
+import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native'
 import React from 'react'
 import {colors, numberWithCommas, responsiveHeight, responsiveWidth} from '../../../utils'
 import { IconHapus } from '../../../assets'
 import Jarak from '../jarak'
+import { connect } from 'react-redux'
+import {deleteKeranjang} from '../../../actions/KeranjangAction'
 
-const CardKeranjang = ({keranjang}) => {
+const CardKeranjang = ({keranjang, keranjangUtama, id, dispatch}) => {
+
+  const hapusKeranjang = () => {
+    dispatch(deleteKeranjang(id, keranjangUtama, keranjang))
+  }
   return (
     <View style={styles.container}>
-      <Image source={keranjang.product.gambar[0]} style={styles.gambar}/>
+      <Image source={{uri : keranjang.product.gambar[0]}} style={styles.gambar}/>
       <View style={styles.deskripsi}>
         <Text style={styles.nama}>{keranjang.product.nama}</Text>
         <Text style={styles.text}>Rp. {numberWithCommas(keranjang.product.harga)}</Text>
+
         <Jarak height={responsiveHeight(14)}/>
+        
         <Text style={styles.textBold}>Pesan : <Text style={styles.text}>{keranjang.jumlahPesan}</Text></Text>
         <Text style={styles.textBold}>Durasi : <Text style={styles.text}>{keranjang.durasi}</Text></Text>
         <Text style={styles.textBold}>Total Harga: <Text style={styles.text}>Rp. {numberWithCommas(keranjang.totalHarga)}</Text></Text>
         <Text style={styles.textBold}>Keterangan:</Text>
         <Text style={styles.text}>{keranjang.keterangan}</Text>
       </View>
-      <View style={styles.hapus}>
+
+      <TouchableOpacity style={styles.hapus} onPress={() => hapusKeranjang()}>
         <IconHapus/>
-      </View>
+      </TouchableOpacity>
     </View>
   )
 }
 
-export default CardKeranjang
+export default connect()(CardKeranjang)
 
 const styles = StyleSheet.create({
   container:{

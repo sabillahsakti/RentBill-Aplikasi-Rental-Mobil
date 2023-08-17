@@ -9,6 +9,8 @@ import {
   PublicSans_600SemiBold,
   PublicSans_700Bold,
 } from '@expo-google-fonts/public-sans';
+import {Provider} from 'react-redux'
+import store from './reducers/store'
 
 function App() {
   let [fontsLoaded, error] = useFonts({
@@ -18,9 +20,11 @@ function App() {
     bold : PublicSans_700Bold,
   });
   return (
-    <NavigationContainer>
-      <Router/>
-    </NavigationContainer>
+    <Provider store={store}>
+      <NavigationContainer>
+        <Router/>
+      </NavigationContainer>
+    </Provider>
   );
 }
 

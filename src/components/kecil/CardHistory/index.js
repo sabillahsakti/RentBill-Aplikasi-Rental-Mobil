@@ -4,22 +4,24 @@ import {colors, numberWithCommas, responsiveHeight, responsiveWidth} from '../..
 import Jarak from '../jarak'
 
 const CardHistory = ({pesanan}) => {
+
+    const history = pesanan.pesanans
   return (
     <View style={styles.container}>
-      <Text style={styles.tanggal}>{pesanan.tanggalPemesanan}</Text>
-      {pesanan.pesanans.map((history, index)=>{
+      <Text style={styles.tanggal}>{pesanan.tanggal}</Text>
+      {Object.keys(history).map((key, index)=>{
         return (
             <View key={index} style={styles.history}>
                 <Text style={styles.textBold}>{index+1}.</Text>
-                <Image source={history.product.gambar[0]} style={styles.car}/>
+                <Image source={{uri: history[key].product.gambar[0]}} style={styles.car}/>
                 <View style={styles.deskripsi}>
-                    <Text style={styles.nama}>{history.product.nama}</Text>
-                    <Text style={styles.harga}>Rp. {numberWithCommas(history.product.harga)}</Text>
+                    <Text style={styles.nama}>{history[key].product.nama}</Text>
+                    <Text style={styles.harga}>Rp. {numberWithCommas(history[key].product.harga)}</Text>
 
                     <Jarak height={10}/>
 
-                    <Text style={styles.textBold}>Pesan: {history.jumlahPesan}</Text>
-                    <Text style={styles.textBold}>Total Harga : Rp. {numberWithCommas(history.totalHarga)}</Text>
+                    <Text style={styles.textBold}>Pesan: {history[key].jumlahPesan}</Text>
+                    <Text style={styles.textBold}>Total Harga : Rp. {numberWithCommas(history[key].totalHarga)}</Text>
                 </View>
             </View>
         )
@@ -29,15 +31,15 @@ const CardHistory = ({pesanan}) => {
 
       <View style={styles.footer}>
         <View style={styles.label}>
-            <Text style={styles.textBlue}>Status : </Text>
-            <Text style={styles.textBlue}>Ongkir(2-3 Hari) : </Text>
+            <Text style={styles.textBlue}>Status :</Text>
+            <Text style={styles.textBlue}>Ongkir({Math.ceil(pesanan.estimasi)} Menit) : </Text>
             <Text style={styles.textBlue}>Total Harga : </Text>
         </View>
 
         <View style={styles.label}>
             <Text style={styles.textBlue}>{pesanan.status}</Text>
-            <Text style={styles.textBlue}>Rp. 15.000</Text>
-            <Text style={styles.textBlue}>Rp. {numberWithCommas(pesanan.totalHarga+15000)}</Text>
+            <Text style={styles.textBlue}>Rp. {numberWithCommas(pesanan.ongkir)}</Text>
+            <Text style={styles.textBlue}>Rp. {numberWithCommas(pesanan.totalHarga+pesanan.ongkir)}</Text>
         </View>
     
       </View>

@@ -15,7 +15,7 @@ export default TextOnly
  
 const styles = StyleSheet.create({
     container:(padding)=>({
-        backgroundColor : colors.primary,
+        backgroundColor : colors.red,
         padding: padding,
         borderRadius: 5,
 

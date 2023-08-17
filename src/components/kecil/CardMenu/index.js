@@ -1,11 +1,25 @@
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
 import React from 'react'
 import { IconArrowRight } from '../../../assets'
-import { colors, responsiveHeight } from '../../../utils'
+import { clearStorage, colors, responsiveHeight } from '../../../utils'
+import FIREBASE from '../../../config/FIREBASE'
 
 const CardMenu = ({menu, navigation}) => {
+
+    const onSubmit = () => {
+        if(menu.halaman === "Login"){
+            FIREBASE.auth().signOut().then(function() {
+                clearStorage()
+                navigation.replace('Login')
+            }).catch(function(error){
+                alert(error)
+            })
+        }else{
+            navigation.navigate(menu.halaman)
+        }
+    }
   return (
-    <TouchableOpacity style={styles.container} onPress={() => navigation.navigate(menu.halaman)}>
+    <TouchableOpacity style={styles.container} onPress={() =>onSubmit()}>
         <View style={styles.menu}>
             {menu.gambar}
             <Text style={styles.text}>{menu.nama}</Text>

@@ -1,6 +1,6 @@
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import {Home, Splash, ListMobil, Profile, CarDetail, Keranjang, CheckOut, EditProfile, ChangePassword, History, Login, Register1, Register2} from '../pages';
+import {Home, Splash, ListMobil, Profile, CarDetail, Keranjang, CheckOut, EditProfile, ChangePassword, History, Login, Register1, Register2, Maps, Midtrans} from '../pages';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import {BottomNavigator} from '../components'
 
@@ -32,6 +32,8 @@ const Router = () => {
         <Stack.Screen name="Login" component={Login} options={{headerShown: false}}/>
         <Stack.Screen name="Register1" component={Register1} options={{headerShown: false}}/>
         <Stack.Screen name="Register2" component={Register2} options={{headerShown: false}}/>
+        <Stack.Screen name="Maps" component={Maps} options={{headerShown: false}}/>
+        <Stack.Screen name="Midtrans" component={Midtrans} options={{title: "Lanjutkan Pembayaran"}}/>
     </Stack.Navigator>
   )
 }

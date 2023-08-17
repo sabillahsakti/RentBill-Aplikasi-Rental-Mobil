@@ -1,4 +1,4 @@
-import { Text, StyleSheet, View, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard } from 'react-native'
+import { Text, StyleSheet, View, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard, Alert } from 'react-native'
 import React, { Component } from 'react'
 import { colors, responsiveHeight, responsiveWidth } from '../../utils'
 import {IlustrasiRegister1} from '../../assets'
@@ -6,7 +6,28 @@ import {Inputan, Jarak, Tombol} from '../../components'
 import { ScrollView } from 'react-native-gesture-handler'
 
 export default class Register1 extends Component {
+
+    constructor(props) {
+      super(props)
+    
+      this.state = {
+         nama: '',
+         email: '',
+         nohp: '',
+         password: ''
+      }
+    }
+
+    onContinue = () => {
+        const {nama, email, nohp, password} = this.state;
+        if(nama && email && nohp && password){
+            this.props.navigation.navigate('Register2', this.state)
+        }else{
+            Alert.alert("Error", "Nama, Email, No Hp, dan Password harus diisi")
+        }
+    }
   render() {
+    const {nama, email, nohp, password} = this.state
     return (
         <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -30,12 +51,37 @@ export default class Register1 extends Component {
                     </View>
 
                     <View style={styles.card}>
-                        <Inputan label="Nama"/>
-                        <Inputan label="Email"/>
-                        <Inputan label="No. Handphone" keyboardType="number-pad"/>
-                        <Inputan label= "Password" secureTextEntry/>
+                        <Inputan 
+                            label="Nama" 
+                            value={nama} 
+                            onChangeText={(nama)=> this.setState({nama})}
+                        />
+                        <Inputan 
+                            label="Email"
+                            value={email} 
+                            onChangeText={(email)=>this.setState({email})}
+                        />
+                        <Inputan 
+                            label="No. Handphone" 
+                            keyboardType="number-pad"
+                            value={nohp} 
+                            onChangeText={(nohp)=>this.setState({nohp})}
+                        />
+                        <Inputan 
+                            label= "Password" 
+                            secureTextEntry
+                            value={password} 
+                            onChangeText={(password)=>this.setState({password})}
+                        />
                         <Jarak height={30}/>
-                        <Tombol title="Continue" type="textIcon" icon="submit" padding={10} fontSize={18} onPress={()=> this.props.navigation.navigate('Register2')}/>
+                        <Tombol 
+                            title="Continue" 
+                            type="textIcon" 
+                            icon="submit" 
+                            padding={10} 
+                            fontSize={18} 
+                            onPress={()=> this.onContinue()}
+                        />
                     </View>
             </ScrollView>
         </TouchableWithoutFeedback>

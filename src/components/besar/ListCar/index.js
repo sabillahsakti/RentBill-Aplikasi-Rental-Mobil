@@ -1,20 +1,37 @@
-import { StyleSheet, Text, View } from 'react-native'
+import { StyleSheet, Text, View, ActivityIndicator } from 'react-native'
 import React from 'react'
 import {CardCar} from '../../kecil'
+import { connect } from 'react-redux'
+import {colors} from '../../../utils'
 
-const ListCar = ({cars, navigation}) => {
+const ListCar = ({getListCarLoading, getListCarResult, getListCarError, navigation}) => {
   return (
     <View style={styles.container}>
-      {cars.map((car)=>{
-        return(
-            <CardCar key={car.id} car={car} navigation={navigation}/>
-        )
-      })}
+      {getListCarResult ? (
+            Object.keys(getListCarResult).map((key) => {
+            return <CardCar key={key} car={getListCarResult[key]} navigation={navigation}/>
+        })
+        ) : getListCarLoading ? (
+            <View style={styles.loading}>
+                <ActivityIndicator color={colors.primary}/>
+            </View>
+        ) : getListCarError ? (
+          <Text>{getListCarError}</Text>
+        ) : (
+            <Text>Data Kosong</Text>
+        )}
+      
     </View>
   )
 }
 
-export default ListCar
+const mapStateToProps = (state) => ({
+    getListCarLoading: state.CarReducer.getListCarLoading,
+    getListCarResult: state.CarReducer.getListCarResult,
+    getListCarError: state.CarReducer.getListCarError,
+})
+
+export default connect(mapStateToProps, null)(ListCar)
 
 const styles = StyleSheet.create({
     container:{
@@ -22,5 +39,11 @@ const styles = StyleSheet.create({
         flexWrap: 'wrap',
         justifyContent : 'space-between',
         marginTop: 10
+    },
+
+    loading:{
+      flex:1,
+      marginTop: 10,
+      marginBottom: 30
     }
 })

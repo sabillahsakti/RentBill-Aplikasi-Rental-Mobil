@@ -19,7 +19,7 @@ export default class CarSlider extends Component {
         openImage: true,
         previewImage: [
           {
-            url: '',
+            url: this.props.images[index],
             props: {
                 // Or you can set source directory.
                 source: this.props.images[index]
@@ -44,7 +44,7 @@ export default class CarSlider extends Component {
               this.clickPreview(index)
             }
             />
-        <Modal visible={openImage} transparent={true}>
+        <Modal visible={openImage} transparent={true} onRequestClose={() => this.setState({openImage: false})}>
                 <ImageViewer imageUrls={previewImage} 
                 backgroundColor={colors.primary} 
                 onClick={() => this.setState({openImage:false})}
